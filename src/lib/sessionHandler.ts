@@ -15,7 +15,7 @@ export interface SessionData {
 }
 
 export interface partialTwitter {
-    user?: { userData: { data: { id: string, username: string, name: string } } }
+    userData: { data: { id: string, username: string, name: string } }
     tokenResponse?: any;
 }
 
@@ -35,8 +35,8 @@ export async function updateSessionData(sessionId: string, data: Partial<Session
 export async function getSessionData(sessionId: string): Promise<SessionData | null> {
     const database = db.collection<SessionData>('sessions');
     let result = await database.findOne({ sessionId: sessionId }) as SessionData;
+    if (!result) return null
     delete result._id
-
     return result
 }
 

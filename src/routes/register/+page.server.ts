@@ -3,12 +3,6 @@ import { updateSessionData, getSessionData, createSession, cookieOptions } from 
 import { error } from '@sveltejs/kit'
 import { getTwitterRedirectUrl } from '$lib/twitterAuth';
 
-
-
-
-
-
-
 export const load = (async ({ params, locals, cookies }) => {
     let sessionID = cookies.get('sessionID') as string | undefined;
     let session_id = cookies.get('session_id') as string | undefined;
@@ -17,8 +11,10 @@ export const load = (async ({ params, locals, cookies }) => {
 
 
     if (!sessionID) {
-        createSession(cookies)
-        twitterRedirectURL = getTwitterRedirectUrl(sessionID)
+        let { sessionID } = await createSession(cookies)
+        if (sessionID) {
+            twitterRedirectURL = getTwitterRedirectUrl(sessionID);
+        }
     }
 
     if (sessionID) twitterRedirectURL = getTwitterRedirectUrl(sessionID)

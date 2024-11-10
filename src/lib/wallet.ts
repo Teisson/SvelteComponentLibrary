@@ -1,11 +1,13 @@
 import { writable } from 'svelte/store';
 import { getAccount, injected, type GetAccountReturnType } from '@wagmi/core'
-import { 
+import {
     connect,
     reconnect,
     disconnect as disconnectWagmi,
-    watchAccount 
+    watchAccount
 } from '@wagmi/core'
+import { signMessage } from '@wagmi/core'
+
 import { config } from './config'
 
 type Wallet = GetAccountReturnType;
@@ -15,19 +17,21 @@ const disconnect = () => disconnectWagmi(config);
 
 const createWalletStore = () => {
     const { set, subscribe, update } = writable<Wallet>(getAccount(config));
-    
+
     return {
         subscribe,
         set,
         update,
         connect: connectWallet,
-        disconnect: disconnect
+        disconnect: disconnect,
+        config
     }
 };
 
 export const walletStore = createWalletStore();
+export { signMessage } from '@wagmi/core'
 
 // Watch account changes
-watchAccount(config, { onChange: walletStore.set } );
+watchAccount(config, { onChange: walletStore.set });
 // Reconnect wallet when reload
 reconnect(config);

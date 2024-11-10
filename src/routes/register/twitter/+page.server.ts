@@ -18,7 +18,7 @@ export const load = (async ({ url, params, cookies }) => {
         if (state === sessionID && code) {
             let user = await handleTwitterCallback(state, code, sessionID)
             console.log('/twitter:user', user)
-            updateSessionData(sessionID, { twitter: { user } })
+            updateSessionData(sessionID, { twitter: user })
             redirect(301, '/register')
 
 
