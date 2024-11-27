@@ -8,14 +8,24 @@
     let twitter = json?.twitter;
     let discordUsername = json.discord?.username;
     let stage = json.stage;
+    let error = false;
+    let errormsg = "";
+
+    let message = "";
+
+    async function validate() {
+        let valid = await fetch("api/validate?message=" + message);
+        if (valid.status === 200) {
+            // sign();
+            console.log("valid");
+        } else {
+            error = true;
+            console.log("session error-data incorrect");
+            errormsg = await valid.json();
+        }
+    }
 
     async function sign() {
-        const message =
-            discordUsername +
-            "#" +
-            twitter?.userData?.data.username +
-            "$" +
-            $walletStore.address;
         const signature = await signMessage(walletStore.config, { message });
 
         let response = await fetch("/api/sign", {
@@ -33,9 +43,20 @@
             window.location.href = "/";
         }
     }
+
+    $: message =
+        discordUsername +
+        ":" +
+        twitter?.userData?.data.username +
+        ";" +
+        $walletStore.address;
 </script>
 
 <h1>register</h1>
+
+{#if error}
+    <p class="error">Invalid Registration attempt</p>
+    <p class="error">{errormsg.message}</p>{/if}
 
 {#if discordUsername}
     <p>Discord Authenticated - {discordUsername}</p>
@@ -65,8 +86,7 @@
         <div>
             <p>Address: {$walletStore.address}</p>
             <p>Connected on: {$walletStore.chain?.name}</p>
-
-            <button on:click={sign}>Sign to register</button>
+            <button on:click={validate}>Sign to register</button>
         </div>
     {:else}
         <button on:click={walletStore.connect}> Connect wallet </button>
@@ -76,3 +96,10 @@
 {#if json}
     <JsonView {json}></JsonView>
 {/if}
+
+<style>
+    .error {
+        color: red;
+        font-size: 15px;
+    }
+</style>

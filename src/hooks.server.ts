@@ -5,12 +5,13 @@ import { MONGODB } from '$env/static/private';
 let client: MongoClient;
 export let db: Db;
 
+
 async function connectToDatabase() {
     if (!client) {
         client = new MongoClient(MONGODB);
         try {
             await client.connect();
-            db = client.db(); // You can specify the database name if needed
+            db = client.db('_neutronium'); // You can specify the database name if needed
         } catch (err) {
             console.error("Failed to connect to MongoDB", err);
             throw err; // Handle the error appropriately
@@ -22,8 +23,7 @@ async function connectToDatabase() {
 export async function handle({ event, resolve }) {
     // Initialize database connection only once
     if (!client) await connectToDatabase();
-
     return await resolve(event);
 }
 
-await connectToDatabase(); // default connection
+let connected = await connectToDatabase(); // default connection

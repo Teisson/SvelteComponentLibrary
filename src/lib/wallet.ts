@@ -6,7 +6,7 @@ import {
     disconnect as disconnectWagmi,
     watchAccount
 } from '@wagmi/core'
-import { signMessage } from '@wagmi/core'
+import { signMessage, verifyMessage } from '@wagmi/core'
 
 import { config } from './config'
 
@@ -29,7 +29,8 @@ const createWalletStore = () => {
 };
 
 export const walletStore = createWalletStore();
-export { signMessage } from '@wagmi/core'
+export { signMessage, verifyMessage } from '@wagmi/core'
+export { config } from './config'
 
 // Watch account changes
 watchAccount(config, { onChange: walletStore.set });

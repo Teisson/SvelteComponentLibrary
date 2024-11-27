@@ -25,7 +25,6 @@ export const load = (async ({ url, cookies }) => {
         return { error: "No authorization code provided" };
     }
 
-
     // Attempt to authenticate with Discord using the provided code
     let discordUserResponse = await getDiscordAuth(code);
 

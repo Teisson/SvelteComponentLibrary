@@ -21,7 +21,7 @@ export interface partialTwitter {
 
 // Store session data in the database
 export async function updateSessionData(sessionId: string, data: Partial<SessionData>): Promise<UpdateResult<SessionData>> {
-    const database = db.collection<SessionData>('sessions');
+    const database = db.collection<SessionData>('_sessions');
     let updated = await database.updateOne(
         { "sessionId": { $eq: sessionId } },
         { $set: data },
@@ -33,7 +33,7 @@ export async function updateSessionData(sessionId: string, data: Partial<Session
 
 // Retrieve session data from the database
 export async function getSessionData(sessionId: string): Promise<SessionData | null> {
-    const database = db.collection<SessionData>('sessions');
+    const database = db.collection<SessionData>('_sessions');
     let result = await database.findOne({ sessionId: sessionId }) as SessionData;
     if (!result) return null
     delete result._id
